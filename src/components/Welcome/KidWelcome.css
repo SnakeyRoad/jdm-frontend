@@ -1,0 +1,35 @@
+/* Styles for the welcome component */
+.font-comic {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+.start-button {
+  transition: all 0.3s ease;
+}
+
+.start-button:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Animation for emojis */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.welcome-container span[role="img"] {
+  display: inline-block;
+  animation: bounce 2s ease infinite;
+}
+
+.welcome-container span[role="img"]:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.welcome-container span[role="img"]:nth-child(3) {
+  animation-delay: 0.6s;
+}

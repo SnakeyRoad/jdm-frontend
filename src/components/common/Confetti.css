@@ -1,0 +1,23 @@
+/* Confetti animation */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-10vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: var(--color);
+  opacity: 0.8;
+  border-radius: 50%;
+  animation: confetti-fall var(--fall-duration, 3s) ease-in-out forwards;
+  animation-delay: var(--delay, 0s);
+  z-index: 100;
+}

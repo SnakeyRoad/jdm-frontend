@@ -10,6 +10,7 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -21,3 +22,53 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Local Netlify folder
+.netlify
+
+# Next.js build output
+.next
+
+# Cache directories
+.cache/
+.temp/
+.tmp/
+
+# Logs
+logs
+*.log
+
+# Cursor IDE files
+.cursor/
+.cursorignore
+.cursor-settings.json
+.cursor-history.json
