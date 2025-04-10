@@ -1,35 +1,118 @@
-/* Additional custom styles for the login form if needed */
-.login-wrapper {
-  min-height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+/* Fullscreen centered container */
 .login-container {
-  background-color: white;
-  transition: all 0.3s ease;
+  min-height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f4fc;
+  font-family: 'Segoe UI', sans-serif;
+  padding: 1rem;
+}
+
+/* White box for the form */
+.login-box {
+  background: #fff;
+  padding: 2.5rem;
+  border-radius: 12px;
   width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
-.login-container:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+/* Title styling */
+.login-box h2 {
+  text-align: center;
+  color: #1a4ed8;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
 }
 
-/* Input focus styles */
-input:focus {
+/* Label styling */
+.login-box label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Inputs spacing and sizing */
+.login-box input[type="text"],
+.login-box input[type="password"] {
+  width: 100%;
+  padding: 0.65rem;
+  margin-bottom: 1.25rem;
+  border-radius: 8px;
+  border: 1px solid #c7e4ff;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+/* Input focus behavior */
+.login-box input:focus {
   outline: none;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* Radio button custom styles */
-input[type="radio"] {
+/* Role selection section */
+.login-role {
+  margin: 1rem 0;
+}
+
+.login-role p {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.login-role label {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 1.5rem;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.login-role input[type="radio"] {
+  margin-right: 0.4rem;
+  transform: scale(1.1);
   cursor: pointer;
 }
 
-/* Button hover effect */
-button:not(:disabled):hover {
-  transform: translateY(-1px);
+/* Button styling */
+.login-box button {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  background-color: #1a4ed8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.login-box button:hover {
+  background-color: #163dbf;
+  transform: translateY(-2px);
+}
+
+/* Error message */
+.login-error {
+  background-color: #ffe5e5;
+  color: #b00020;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* Info note */
+.login-note {
+  font-size: 0.85rem;
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #666;
 }
