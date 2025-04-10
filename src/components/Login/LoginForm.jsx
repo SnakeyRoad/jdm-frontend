@@ -11,7 +11,6 @@ const LoginForm = ({ onLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!username.trim() || !password.trim()) {
       setError('Please enter both username and password.');
       return;
@@ -30,22 +29,13 @@ const LoginForm = ({ onLogin }) => {
       }
 
       const result = await authenticateUser(username, password, role);
-
       if (result.success) {
         onLogin(username, role);
       } else {
-        setError(result.error || 'Authentication failed. Please try again.');
+        setError(result.error || 'Authentication failed.');
       }
     } catch (err) {
-      console.error('Login error:', err);
-      if (
-          (role === 'kid' && username === 'testkid' && password === 'pass') ||
-          (role === 'doctor' && username === 'drhouse' && password === 'pass')
-      ) {
-        onLogin(username, role);
-        return;
-      }
-      setError('An unexpected error occurred. Please try again.');
+      setError('An unexpected error occurred.');
     } finally {
       setIsLoading(false);
     }
@@ -56,11 +46,7 @@ const LoginForm = ({ onLogin }) => {
         <div className="login-box">
           <h2>JDM Tracker Login</h2>
 
-          {error && (
-              <div className="login-error">
-                {error}
-              </div>
-          )}
+          {error && <div className="login-error">{error}</div>}
 
           <form onSubmit={handleSubmit}>
             <label htmlFor="username">Username</label>
@@ -69,7 +55,6 @@ const LoginForm = ({ onLogin }) => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter username"
                 required
             />
 
@@ -79,12 +64,10 @@ const LoginForm = ({ onLogin }) => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
                 required
             />
 
             <div className="login-role">
-              <p>I am a:</p>
               <label>
                 <input
                     type="radio"

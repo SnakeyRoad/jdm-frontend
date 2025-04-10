@@ -10,17 +10,19 @@ import Header from './components/common/Header';
 import Footer from './components/common/Footer';
 import { useScoreContext } from './contexts/ScoreContext';
 import { playClickSound, playCelebrationSound } from './utils/soundEffects';
+import ChatBubble from './components/common/ChatBubble'; // adjust path if needed
+
 
 // Define the CMAS tasks
 const CMAS_TASKS = [
   {
     id: 0,
     title: "Task 1: Head Lift",
-    instruction: "How many seconds could you hold your head up?",
+    instruction: "How long can you hold your head up?",
     type: "choice",
     maxPoints: 5,
     options: [
-      { label: "Unable to lift head", value: 0 },
+      { label: "Can't lift head", value: 0 },
       { label: "1-9 seconds", value: 1 },
       { label: "10-29 seconds", value: 2 },
       { label: "30-59 seconds", value: 3 },
@@ -30,24 +32,24 @@ const CMAS_TASKS = [
   },
   {
     id: 1,
-    title: "Task 2: Leg Raise / Touch Object",
-    instruction: "Can you lift your leg and touch the object (examiner's hand)?",
+    title: "Task 2: Leg Raise & touch",
+    instruction: "Can you lift your leg and touch something in front of you?",
     type: "choice",
     maxPoints: 2,
     options: [
-      { label: "Unable to lift leg", value: 0 },
-      { label: "Can lift leg but can't touch object", value: 1 },
-      { label: "Can touch the object", value: 2 }
+      { label: "Can't lift leg", value: 0 },
+      { label: "Can lift leg but not touch", value: 1 },
+      { label: "Can touch", value: 2 }
     ]
   },
   {
     id: 2,
-    title: "Task 3: Straight Leg Lift / Duration",
-    instruction: "How long could you hold your leg straight?",
+    title: "Task 3: Hold leg up",
+    instruction: "How long can you hold up your leg straight?",
     type: "choice",
     maxPoints: 5,
     options: [
-      { label: "Unable to lift leg", value: 0 },
+      { label: "Can't to lift leg", value: 0 },
       { label: "1-9 seconds", value: 1 },
       { label: "10-29 seconds", value: 2 },
       { label: "30-59 seconds", value: 3 },
@@ -57,83 +59,83 @@ const CMAS_TASKS = [
   },
   {
     id: 3,
-    title: "Task 4: Supine to Prone",
-    instruction: "How difficult was it to turn from your back to your stomach?",
+    title: "Task 4: Roll over",
+    instruction: "Can you roll over from your back to stomach?",
     type: "choice",
     maxPoints: 3,
     options: [
-      { label: "Could not turn fully", value: 0 },
-      { label: "Turned but couldn't free right arm", value: 1 },
-      { label: "Freed arm with difficulty", value: 2 },
-      { label: "No difficulty", value: 3 }
+      { label: "Can't roll fully", value: 0 },
+      { label: "Rolled but arm stuck", value: 1 },
+      { label: "Rolled with difficulty", value: 2 },
+      { label: "No problem at all", value: 3 }
     ]
   },
   {
     id: 4,
     title: "Task 5: Sit-ups",
-    instruction: "Which sit-up positions could you do?",
+    instruction: "Which sit-up positions can you do?",
     type: "multiselect",
     maxPoints: 6,
     options: [
-      { label: "Hands on thighs with counterbalance", value: 1, id: "sit1" },
-      { label: "Hands on thighs without counterbalance", value: 1, id: "sit2" },
-      { label: "Arms crossed with counterbalance", value: 1, id: "sit3" },
-      { label: "Arms crossed without counterbalance", value: 1, id: "sit4" },
-      { label: "Hands behind head with counterbalance", value: 1, id: "sit5" },
-      { label: "Hands behind head without counterbalance", value: 1, id: "sit6" }
+      { label: "Hands on thighs with help", value: 1, id: "sit1" },
+      { label: "Hands on thighs without help", value: 1, id: "sit2" },
+      { label: "Arms crossed with help", value: 1, id: "sit3" },
+      { label: "Arms crossed without help", value: 1, id: "sit4" },
+      { label: "Hands behind head with help", value: 1, id: "sit5" },
+      { label: "Hands behind head without help", value: 1, id: "sit6" }
     ]
   },
   {
     id: 5,
     title: "Task 6: Supine to Sit",
-    instruction: "How difficult was it to move from lying down to sitting up?",
+    instruction: "How hard was it to sit up from lying down?",
     type: "choice",
     maxPoints: 3,
     options: [
-      { label: "Unable to sit up", value: 0 },
-      { label: "Much difficulty", value: 1 },
-      { label: "Some difficulty", value: 2 },
-      { label: "No difficulty", value: 3 }
+      { label: "Can't sit up", value: 0 },
+      { label: "Was very hard", value: 1 },
+      { label: "Was a bit hard", value: 2 },
+      { label: "Easy", value: 3 }
     ]
   },
   {
     id: 6,
     title: "Task 7: Arm Raise / Straighten",
-    instruction: "How high could you raise your arms?",
+    instruction: "How high can you lift your arms?",
     type: "choice",
     maxPoints: 3,
     options: [
-      { label: "Cannot raise to shoulder", value: 0 },
-      { label: "To shoulder, not above head", value: 1 },
-      { label: "Above head, not fully extended", value: 2 },
-      { label: "Fully extended above head", value: 3 }
+      { label: "Can't lift above shoulders", value: 0 },
+      { label: "To my shoulder, not above my head", value: 1 },
+      { label: "Above head, but not all the way", value: 2 },
+      { label: "All the way up over my head", value: 3 }
     ]
   },
   {
     id: 7,
     title: "Task 8: Arm Raise / Duration",
-    instruction: "How long could you hold your arms up?",
+    instruction: "How long can you hold your arms up?",
     type: "choice",
     maxPoints: 4,
     options: [
-      { label: "Unable to hold", value: 0 },
+      { label: "I can't hold them up", value: 0 },
       { label: "1-9 seconds", value: 1 },
       { label: "10-29 seconds", value: 2 },
       { label: "30-59 seconds", value: 3 },
-      { label: "60+ seconds", value: 4 }
+      { label: "1 minute or more", value: 4 }
     ]
   },
   {
     id: 8,
     title: "Task 9: Floor Sit",
-    instruction: "How difficult was it to sit on the floor from standing?",
+    instruction: "How hard was it to sit down on the floor from standing?",
     type: "choice",
     maxPoints: 3,
     options: [
-      { label: "Unable to do it", value: 0 },
-      { label: "Much difficulty (needed chair)", value: 1 },
-      { label: "Some difficulty", value: 2 },
-      { label: "No difficulty", value: 3 }
+      { label: "Can't do it", value: 0 },
+      { label: "Was hard and needed help", value: 1 },
+      { label: "A bit hard", value: 2 },
+      { label: "Easy", value: 3 }
     ]
   },
   {
@@ -143,65 +145,65 @@ const CMAS_TASKS = [
     type: "choice",
     maxPoints: 4,
     options: [
-      { label: "Could not get on hands and knees", value: 0 },
-      { label: "Barely maintained position", value: 1 },
-      { label: "Maintained position but couldn't crawl", value: 2 },
-      { label: "Could crawl", value: 3 },
-      { label: "Could crawl and extend a leg", value: 4 }
+      { label: "Can't not get on hands and knees", value: 0 },
+      { label: "Can't stay for long on hand and knees", value: 1 },
+      { label: "Can stay in position but can't crawl", value: 2 },
+      { label: "Can crawl", value: 3 },
+      { label: "Can crawl and stretch a leg", value: 4 }
     ]
   },
   {
     id: 10,
     title: "Task 11: Floor Rise",
-    instruction: "How did you stand up from kneeling?",
+    instruction: "How did you get up from kneeling?",
     type: "choice",
     maxPoints: 4,
     options: [
-      { label: "Could not stand up", value: 0 },
-      { label: "Used a chair to stand", value: 1 },
+      { label: "Can not stand up", value: 0 },
+      { label: "Needed help of a chair to stand", value: 1 },
       { label: "Used hands on body", value: 2 },
-      { label: "No hands, some difficulty", value: 3 },
-      { label: "No difficulty", value: 4 }
+      { label: "No hands, bit hard", value: 3 },
+      { label: "Easily got up with no help", value: 4 }
     ]
   },
   {
     id: 11,
     title: "Task 12: Chair Rise",
-    instruction: "How did you stand up from the chair?",
+    instruction: "How did you stand up from a chair?",
     type: "choice",
     maxPoints: 4,
     options: [
-      { label: "Could not stand up", value: 0 },
+      { label: "Can not stand up", value: 0 },
       { label: "Needed hands on chair", value: 1 },
-      { label: "Used hands on knees/thighs", value: 2 },
-      { label: "No hands, some difficulty", value: 3 },
-      { label: "No difficulty", value: 4 }
+      { label: "Used hands on knees or thighs", value: 2 },
+      { label: "No hands, bit hard", value: 3 },
+      { label: "Easily stood up", value: 4 }
     ]
   },
   {
     id: 12,
     title: "Task 13: Stool Step",
-    instruction: "How did you step up onto the stool?",
+    instruction: "How did you step onto a stool?",
     type: "choice",
     maxPoints: 3,
     options: [
-      { label: "Could not step up", value: 0 },
+      { label: "Can't not step up", value: 0 },
       { label: "Needed table or hand support", value: 1 },
-      { label: "Hand on knee/thigh", value: 2 },
-      { label: "No support needed", value: 3 }
+      { label: "Pushed on leg to help", value: 2 },
+      { label: "No help needed", value: 3 }
     ]
   },
   {
     id: 13,
     title: "Task 14: Pick-Up",
-    instruction: "How difficult was it to pick up the pencil from the floor?",
+    instruction: "Was it hard to pick up pencil from the floor?",
     type: "choice",
     maxPoints: 3,
     options: [
-      { label: "Could not pick it up", value: 0 },
-      { label: "Much difficulty (needed support)", value: 1 },
-      { label: "Some difficulty (brief support)", value: 2 },
-      { label: "No difficulty", value: 3 }
+      { label: "Can't pick it up", value: 0 },
+      { label: "Was very hard", value: 1 },
+      { label: "A little hard", value: 2 },
+      { label: "No problem at all", value: 3 }
     ]
   }
 ];
@@ -244,7 +246,8 @@ function App() {
   return (
     <Router>
       <div className="app-container min-h-screen flex flex-col">
-        <Header username={username} onLogout={handleLogout} />
+        <Header username={username} onLogout={handleLogout} userRole={userRole} />
+
         <main className="flex-grow p-4">
           <Routes>
             <Route 
@@ -296,7 +299,13 @@ function App() {
             />
           </Routes>
         </main>
+        <main className="flex-grow p-4">
+          <Routes>
+            {/* routes here */}
+          </Routes>
+        </main>
         <Footer />
+        {isAuthenticated && userRole === 'kid' && <ChatBubble />}
       </div>
     </Router>
   );
