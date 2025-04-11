@@ -4,6 +4,21 @@ import { downloadHistoricalDataAsCsv } from '../../utils/exportCsv';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 import './DoctorDashboard.css';
 
+// Helper functions moved outside component
+const getScoreColor = (score, cmasInterpretation) => {
+  const category = cmasInterpretation.find(
+    cat => score >= cat.range[0] && score <= cat.range[1]
+  );
+  return category ? category.color : '#6b7280';
+};
+
+const getScoreInterpretation = (score, cmasInterpretation) => {
+  const category = cmasInterpretation.find(
+    cat => score >= cat.range[0] && score <= cat.range[1]
+  );
+  return category ? category.label : 'Not categorized';
+};
+
 const DoctorDashboard = ({ username, allTasks }) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -15,28 +30,12 @@ const DoctorDashboard = ({ username, allTasks }) => {
   const maxCmasScore = allTasks ? allTasks.reduce((sum, task) => sum + (task.maxPoints || 0), 0) : 53;
   
   // CMAS interpretation categories
-  const cmasInterpretation = [
+  const cmasInterpretation = React.useMemo(() => [
     { range: [0, 19], label: 'Severe impairment', color: '#ef4444' },
     { range: [20, 34], label: 'Moderate impairment', color: '#f97316' },
     { range: [35, 49], label: 'Mild impairment', color: '#facc15' },
     { range: [50, maxCmasScore], label: 'Normal function', color: '#22c55e' }
-  ];
-  
-  // Get color based on CMAS score
-  const getScoreColor = (score) => {
-    const category = cmasInterpretation.find(
-      cat => score >= cat.range[0] && score <= cat.range[1]
-    );
-    return category ? category.color : '#6b7280';
-  };
-  
-  // Get interpretation based on CMAS score
-  const getScoreInterpretation = (score) => {
-    const category = cmasInterpretation.find(
-      cat => score >= cat.range[0] && score <= cat.range[1]
-    );
-    return category ? category.label : 'Not categorized';
-  };
+  ], [maxCmasScore]);
   
   // Load historical data on component mount
   useEffect(() => {
@@ -48,8 +47,8 @@ const DoctorDashboard = ({ username, allTasks }) => {
         // Add interpretation to each data point
         const enhancedData = historicalData.map(item => ({
           ...item,
-          interpretation: getScoreInterpretation(item.totalScore),
-          scoreColor: getScoreColor(item.totalScore)
+          interpretation: getScoreInterpretation(item.totalScore, cmasInterpretation),
+          scoreColor: getScoreColor(item.totalScore, cmasInterpretation)
         }));
         
         setData(enhancedData);
@@ -63,13 +62,13 @@ const DoctorDashboard = ({ username, allTasks }) => {
     };
     
     loadData();
-  }, []);
+  }, [cmasInterpretation]);
   
   // Get unique patient list
   const patientList = React.useMemo(() => {
     if (!data.length) return [];
     const patients = new Set(data.map(item => item.username));
-    return ['all', ...patients];
+    return ['all', ...Array.from(patients)];
   }, [data]);
   
   // Filter data based on selected patient
@@ -90,26 +89,19 @@ const DoctorDashboard = ({ username, allTasks }) => {
   
   // Handle CSV export
   const handleExport = () => {
-    downloadHistoricalDataAsCsv(filteredData);
+    // Always export all data, not just the filtered data
+    downloadHistoricalDataAsCsv(data);
   };
 
   // Custom tooltip for charts
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
+      const measurement = payload[0].payload;
       return (
         <div className="custom-tooltip bg-white p-3 border border-gray-200 rounded shadow-md">
           <p className="font-bold">{label}</p>
-          <p className="text-sm">
-            Patient: <span className="font-medium">{payload[0].payload.username}</span>
-          </p>
-          <p className="text-sm">
-            Score: <span className="font-medium">{payload[0].value}</span>
-          </p>
-          <p className="text-sm">
-            Status: <span className="font-medium" style={{ color: payload[0].payload.scoreColor }}>
-              {payload[0].payload.interpretation}
-            </span>
-          </p>
+          <p className="text-sm">Score: {measurement.totalScore}</p>
+          <p className="text-sm">Status: {measurement.interpretation}</p>
         </div>
       );
     }
@@ -177,9 +169,9 @@ const DoctorDashboard = ({ username, allTasks }) => {
         <div className="export-control ml-auto">
           <button
             onClick={handleExport}
-            disabled={filteredData.length === 0}
+            disabled={data.length === 0}
             className={`bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors ${
-              filteredData.length === 0 ? 'opacity-50 cursor-not-allowed' : ''
+              data.length === 0 ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
             Export to CSV
@@ -321,7 +313,7 @@ const DoctorDashboard = ({ username, allTasks }) => {
         <p className="text-sm text-gray-700 mt-1">
           This dashboard provides a summary of patient CMAS scores. For detailed analysis and 
           clinical decision-making, please refer to the complete patient records in your electronic 
-          health record system. The CSV export feature allows for further analysis in specialized software.
+          health record system. The CSV export feature allows for further analysis in our specialized software backend panel.
         </p>
       </div>
     </div>

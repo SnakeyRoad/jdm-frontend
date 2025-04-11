@@ -75,7 +75,7 @@ const LoginForm = ({ onLogin }) => {
                     checked={role === 'kid'}
                     onChange={() => setRole('kid')}
                 />
-                Kid / Patient
+                Patient
               </label>
               <label>
                 <input
@@ -84,7 +84,7 @@ const LoginForm = ({ onLogin }) => {
                     checked={role === 'doctor'}
                     onChange={() => setRole('doctor')}
                 />
-                Doctor / Clinician
+                Clinician
               </label>
             </div>
 

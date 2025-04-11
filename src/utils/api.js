@@ -1,5 +1,17 @@
 // Simulated API functions that would connect to your backend
 
+// Simulated database for historical data
+let historicalData = [
+  { username: 'testkid', date: '2024-01-15', totalScore: 22, interpretation: 'Moderate impairment' },
+  { username: 'testkid', date: '2024-02-01', totalScore: 28, interpretation: 'Moderate impairment' },
+  { username: 'testkid', date: '2024-02-15', totalScore: 35, interpretation: 'Mild impairment' },
+  { username: 'patient2', date: '2024-02-20', totalScore: 32, interpretation: 'Moderate impairment' },
+  { username: 'patient3', date: '2024-02-25', totalScore: 19, interpretation: 'Severe impairment' },
+  { username: 'testkid', date: '2024-03-01', totalScore: 38, interpretation: 'Mild impairment' },
+  { username: 'patient2', date: '2024-03-05', totalScore: 35, interpretation: 'Mild impairment' },
+  { username: 'patient3', date: '2024-03-10', totalScore: 22, interpretation: 'Moderate impairment' }
+];
+
 /**
  * Simulates authentication with backend
  * @param {string} username 
@@ -67,23 +79,41 @@ export const submitScores = async (username, scores) => {
 };
 
 /**
- * Fetches historical data for a doctor
- * @returns {Promise<Array>}
+ * Saves a new score measurement
  */
-export const fetchHistoricalData = async () => {
-  // Simulated API call to get historical data
+export const saveScoreMeasurement = async (username, totalScore) => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      // Sample mock data
-      const mockData = [
-        { username: 'patient1', date: '2025-03-01', totalScore: 28 },
-        { username: 'patient2', date: '2025-03-05', totalScore: 32 },
-        { username: 'patient3', date: '2025-03-10', totalScore: 19 },
-        { username: 'patient1', date: '2025-03-15', totalScore: 30 },
-        { username: 'patient2', date: '2025-03-20', totalScore: 35 },
-        { username: 'patient3', date: '2025-03-25', totalScore: 22 },
-      ];
-      resolve(mockData);
+      const today = new Date();
+      const measurement = {
+        username,
+        date: today.toISOString().split('T')[0],
+        totalScore,
+        interpretation: getScoreInterpretation(totalScore)
+      };
+      
+      historicalData.push(measurement);
+      resolve({ success: true });
+    }, 300);
+  });
+};
+
+/**
+ * Fetches historical data for the doctor dashboard
+ */
+export const fetchHistoricalData = async () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(historicalData);
     }, 1000);
   });
 };
+
+// Helper function to get score interpretation
+function getScoreInterpretation(score) {
+  if (score >= 0 && score <= 19) return 'Severe impairment';
+  if (score >= 20 && score <= 34) return 'Moderate impairment';
+  if (score >= 35 && score <= 49) return 'Mild impairment';
+  if (score >= 50) return 'Normal function';
+  return 'Not categorized';
+}

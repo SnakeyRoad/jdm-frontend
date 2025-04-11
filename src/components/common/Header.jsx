@@ -21,11 +21,13 @@ const Header = ({ username, onLogout }) => {
                 </div>
             )}
 
-            {/* Right section: login info and logout */}
-            <div className="header-section right">
-                <span className="logged-in">Logged in as: <strong>{username}</strong></span>
-                <button onClick={onLogout} className="logout-button">Log Out</button>
-            </div>
+            {/* Right section: login info and logout - only show when there's a username */}
+            {username && (
+                <div className="header-section right">
+                    <span className="logged-in">Logged in as: <strong>{username}</strong></span>
+                    <button onClick={onLogout} className="logout-button">Log Out</button>
+                </div>
+            )}
         </header>
     );
 };
